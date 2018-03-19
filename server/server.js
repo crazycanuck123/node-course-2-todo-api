@@ -34,19 +34,7 @@ app.get('/todos', (req, res) => {
   });
 });
 
-// app.post('/todos', (req, res) => {
-//
-//   var todo = new Todo({
-//     text: req.body.text
-//   })
-//
-//   res.send(req.body.text);
-// });
 
-// GET /todos/123a;skldjf
-
-
-// GET /todos/12345
 app.get('/todos/:id', (req, res) => {
   var id = req.params.id;
   if(!ObjectID.isValid(id)){
@@ -64,6 +52,30 @@ app.get('/todos/:id', (req, res) => {
     });
 });
 
+app.delete('/todos/:id', (req, res) => {
+  // get the id
+  var id = req.params.id;
+  // validate the id -> not valid? return 404
+  if(!ObjectID.isValid(id)){
+    return res.status(404).send();
+  }
+  Todo.findByIdAndRemove(id).then((todo) => {
+    if(!todo){
+      return res.status(404).send();
+    }
+    res.send({todo});
+  console.log(todo);
+}, (e) =>{
+  console.error(e);
+  res.status(400).send();
+});
+  // remove todo by id
+    //success
+      // if no doc, send 404
+      // if doc, send doc with 200
+    //error
+      //400 w/ empty body
+});
 
 app.listen(port, () => {
   console.log(`Stared up at port ${port}`);
