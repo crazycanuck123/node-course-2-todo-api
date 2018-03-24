@@ -100,6 +100,22 @@ app.patch('/todos/:id', (req, res) =>{
   })
 });
 
+//POST /users
+
+app.post('/users', (req, res) =>{
+  var body = _.pick(req.body, ['email', 'password'])
+  var user = new User(body);
+
+
+  user.save().then(() =>{
+    return user.generateAuthToken();
+  }, (e) =>{
+    res.status(400).send(e);
+  }).then((token) =>{
+    res.header('x-auth', token).send(user);
+  });
+});
+
 app.listen(port, () => {
   console.log(`Stared up at port ${port}`);
 });
